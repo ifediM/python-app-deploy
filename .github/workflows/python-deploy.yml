@@ -1,5 +1,6 @@
 name: python App build
 
+
 on:
   push:
     branches: [ "dev_trial1" ]
@@ -8,9 +9,21 @@ on:
     paths:
       - 'src/**'
 
+
 jobs:
   build:
     name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  deploy:   
     runs-on: self-hosted
     steps:
 
@@ -36,6 +49,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_SCANNER_OPTS: "-X"
+
+        
           
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -53,10 +68,6 @@ jobs:
       - name: Publish image to docker hub
         run: docker push ifedim/python_app:latest 
   
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
       - name: Pull image from docker hub
         run: docker pull ifedim/python_app:latest
       - name: Delete old container
