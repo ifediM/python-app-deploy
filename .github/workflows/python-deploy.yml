@@ -22,6 +22,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_SCANNER_OPTS: "-X" 
 
   deploy:   
     runs-on: self-hosted
@@ -43,12 +44,12 @@ jobs:
       - name: Trivy FS scan
         run: trivy fs --format table -o fs.html .    
 
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_SCANNER_OPTS: "-X"
+      #- name: SonarQube Scan
+       # uses: sonarsource/sonarqube-scan-action@master
+        #env:
+         # SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          #SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          #SONAR_SCANNER_OPTS: "-X"
 
         
           
